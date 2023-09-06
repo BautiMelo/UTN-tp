@@ -8,12 +8,12 @@ class Ticket:
         self.distancia = dist
 
     def __str__(self):
-        res = '\n Id: '+ str(Ticket.identificacion)
-        res += '- Patente: '+ str(Ticket.patente)
-        res += '- Tipo: '+ str(Ticket.tipo)
-        res += '- Pago: '+ str(Ticket.pago)
-        res += '- Pais: '+ str(Ticket.pais)
-        res += '- Distancia: '+ str(Ticket.distancia)
+        res = '\n Id: '+ str(self.identificacion)
+        res += '- Patente: '+ str(self.patente)
+        res += '- Tipo: '+ str(self.tipo)
+        res += '- Pago: '+ str(self.pago)
+        res += '- Pais: '+ str(self.pais)
+        res += '- Distancia: '+ str(self.distancia)
         return res
 
 def menu():
@@ -29,10 +29,10 @@ def menu():
         selec = int(input('Elija entre las siguientes opciones:\n'))
         return selec
 
-def cargar_vector(n):
-    v = []
+def cargar_vector(n,v):
     for i in range(n):
         id = int(input('Ingrese un codigo de identificacion de 10 digitos: '))
+
         pat = input('Ingrese la patente del vehiculo: ')
         tp = int(input('Ingrese tipo de vehiculo: '))
         fp = int(input('Ingrese forma de pago: '))
@@ -57,6 +57,8 @@ def ordenar_por_id(v):
             if v[i].identificacion > v[j].identificacion:
                 v[i],v[j] = v[j],v[i]
 
+def mostrar(v):
+    ret = ''
     for i in range(len(v)):
         res = '\n Id: '+ str(v[i].identificacion)
         res += '- Patente: '+ str(v[i].patente)
@@ -67,7 +69,16 @@ def ordenar_por_id(v):
         res += '- Pago: '+ str(v[i].pago)
         res += '- Pais: '+ str(v[i].pais)
         res += '- Distancia: '+ str(v[i].distancia)
-        print(res)
+        ret += res +'\n'
+
+    return ret
+
+def cargar_entre(lim_inf, lim_sup, mensaje):
+    num = int(input(mensaje))
+    while num <= lim_inf or num >= lim_sup:
+        print("Valor incorrecto!, cargue de nuevo")
+        num = int(input(mensaje))
+    return num
 
 
 
@@ -103,3 +114,27 @@ def procesar_patentes(patente):
     else:
         Origen = "Otro"
         return Origen
+
+
+
+def buscar_por_patente(v,patente,cabina):
+    for i in range(len(v)):
+        if v[i].patente == patente.upper():
+            if int(v[i].pais) == cabina:
+                print("Vehiculo encontrado")
+                return v[i]
+    return None
+
+def buscar_por_codigo(v,codigo):
+    for i in range(len(v)):
+        if int(v[i].identificacion) == codigo:
+            if int(v[i].pago) == 1:
+                v[i].pago = 2
+                return v[i]
+
+            if int(v[i].pago) == 2:
+                v[i].pago = 1
+                return v[i]
+
+    return None
+
