@@ -1,13 +1,22 @@
 from TP_3_Modificado import *
 
 def principal():
+    vector = []
     print('Bienvenido!\n\n')
     selec = -1
     while selec != 0:
         selec = menu()
 
         if selec == 1:
-            vector = []
+            if vector is not None:
+                opcion = cargar_entre(0,3,"Desea borrar el contenido previo?\n"
+                                   "1 para confirmar\n"
+                                   "2 para cancelar\n")
+                if opcion == 1:
+                    vector = []
+                elif opcion == 2:
+                    pass
+
             m = open("peajes-tp3.txt","r")
             linea = m.readline()
 
@@ -17,8 +26,37 @@ def principal():
                     break
                 procesar_linea(linea,vector)
 
+        elif selec == 2:
+            n = int(input("Ingrese la cantidad de tickets a cargar:"))
+            cargar_vector(n,vector)
+
         elif selec == 3:
             ordenar_por_id(vector)
+            print(mostrar(vector))
+
+        elif selec == 4:
+            patente = input('Ingrese la patente del vehiculo a buscar: ')
+            cabina = cargar_entre(-1,5,"Ingrese pais de cabina por el que paso:\n"
+                '0)Argentina\n'
+                '1)Bolivia\n'
+                '2)Brasil\n'
+                '3)Paraguay\n'
+                '4)Uruguay\n')
+
+            registro = buscar_por_patente(vector,patente,cabina)
+            if registro is not None:
+                print(registro)
+            else:
+                print("La patente o el pais por donde paso no coincide con ningun elemento del registro")
+
+        elif selec == 5:
+            codigo = cargar_entre(-1,10000000000,"Ingrese el codigo de ticet a modificar:")
+            modificar = buscar_por_codigo(vector,codigo)
+            if modificar is not None:
+                print("Cambios hechos")
+                print(modificar)
+            else:
+                print("El numero de ticket no coincide con ningun elemento del registro")
 
 
 
