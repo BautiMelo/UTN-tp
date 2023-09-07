@@ -29,16 +29,12 @@ def menu():
         selec = int(input('Elija entre las siguientes opciones:\n'))
         return selec
 
-def cargar_vector(n,v):
-    for i in range(n):
-        id = int(input('Ingrese un codigo de identificacion de 10 digitos: '))
-
-        pat = input('Ingrese la patente del vehiculo: ')
-        tp = int(input('Ingrese tipo de vehiculo: '))
-        fp = int(input('Ingrese forma de pago: '))
-        ps = int(input('Ingrese pais de cabina: '))
-        dist = int(input('Ingrese distancia del vehiculo: '))
-        v.append(Ticket(id, pat,  tp, fp, ps, dist))
+def cargar_entre(lim_inf, lim_sup, mensaje):
+    num = int(input(mensaje))
+    while num <= lim_inf or num >= lim_sup:
+        print("Valor incorrecto!, cargue de nuevo")
+        num = int(input(mensaje))
+    return num
 
 def procesar_linea (linea,v):
     id = linea [0:10]
@@ -50,72 +46,77 @@ def procesar_linea (linea,v):
     #return Ticket(id,pat,tp,fp,ps,dist)
     v.append(Ticket(id, pat,  tp, fp, ps, dist))
 
+def cargar_vector(n,v):
+    for i in range(n):
+        id = cargar_entre(-1,10000000000,'Ingrese un codigo de identificacion de 10 digitos:')
+        pat = str(input('Ingrese la patente del vehiculo:'))
+        tp = cargar_entre(-1,3,"Ingrese el tipo de vehiculo:(0.Motocicleta 1.Automovil 2.Camion):")
+        fp = cargar_entre(0,3,"Ingrese el metodo de pago: (1.Manual 2.Telepeaje):")
+        ps = cargar_entre(-1,5,"Ingrese el pais donde se encuentra la cabina de peaje: (0.Argentina 1.Bolivia 2.Brasil 3.Paraguay 4.Uruguay):")
+        dist = cargar_entre(-1,1000,'Ingrese la distancia recorrida desde la ultima casilla de peaje:')
+        v.append(Ticket(id, pat,  tp, fp, ps, dist))
+
 def ordenar_por_id(v):
     n = len(v)
     for i in range(n-1):
         for j in range(i + 1, n):
-            if v[i].identificacion > v[j].identificacion:
+            if int(v[i].identificacion) > int(v[j].identificacion):
                 v[i],v[j] = v[j],v[i]
 
 def mostrar(v):
     ret = ''
     for i in range(len(v)):
-        res = '\n Id: '+ str(v[i].identificacion)
+        res = 'Id: '+ str(v[i].identificacion)
         res += '- Patente: '+ str(v[i].patente)
-        patente = v[i].patente
-        Origen = procesar_patentes(patente)
-        res += '- Origen: '+ str(Origen)
+        origen,indice = procesar_patentes(v,i)
+        res += '- Origen: '+ str(origen)
         res += '- Tipo: '+ str(v[i].tipo)
         res += '- Pago: '+ str(v[i].pago)
         res += '- Pais: '+ str(v[i].pais)
         res += '- Distancia: '+ str(v[i].distancia)
         ret += res +'\n'
-
     return ret
 
-def cargar_entre(lim_inf, lim_sup, mensaje):
-    num = int(input(mensaje))
-    while num <= lim_inf or num >= lim_sup:
-        print("Valor incorrecto!, cargue de nuevo")
-        num = int(input(mensaje))
-    return num
-
-
-
-def procesar_patentes(patente):
+def procesar_patentes(v,i):
     letras = ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
     numeros = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
     vacio = (" ")
+    patente = v[i].patente
 
     if (patente[0] in letras and patente[1] in letras and patente[2] in numeros and patente[3] in numeros and patente[4] in numeros and patente[5] in letras and patente[6] in letras):
         Origen = "Argentina"
-        return Origen
+        Indice = 0
+        return Origen, Indice
 
     elif (patente[0] in letras and patente[1] in letras and patente[2] in letras and patente[3] in numeros and patente[4] in letras and patente[5] in numeros and patente[6] in numeros):
         Origen = "Brasil"
-        return Origen
+        Indice = 1
+        return Origen, Indice
 
     elif(patente[0] in letras and patente[1] in letras and patente[2] in numeros and patente[3] in numeros and patente[4] in numeros and patente[5] in numeros and patente[6] in numeros):
         Origen = "Bolivia"
-        return Origen
+        Indice = 2
+        return Origen, Indice
 
     elif(patente[0] in letras and patente[1] in letras and patente[2] in letras and patente[3] in letras and patente[4] in numeros and patente[5] in numeros and patente[6] in numeros):
         Origen = "Paraguay"
-        return Origen
+        Indice = 3
+        return Origen, Indice
 
     elif(patente[0] in letras and patente[1] in letras and patente[2] in letras and patente[3] in numeros and patente[4] in numeros and patente[5] in numeros and patente[6] in numeros):
         Origen = "Uruguay"
-        return Origen
+        Indice = 4
+        return Origen, Indice
 
     elif(patente[0] in vacio and patente[1] in letras and patente[2] in letras and patente[3] in letras and patente[4] in letras and patente[5] in numeros and patente[6] in numeros):
         Origen = "Chile"
-        return Origen
+        Indice = 5
+        return Origen, Indice
 
     else:
         Origen = "Otro"
-        return Origen
-
-
+        Indice = 6
+        return Origen, Indice
 
 def buscar_por_patente(v,patente,cabina):
     for i in range(len(v)):
@@ -135,6 +136,21 @@ def buscar_por_codigo(v,codigo):
             if int(v[i].pago) == 2:
                 v[i].pago = 1
                 return v[i]
-
     return None
+
+def mostrar_conteo(v):
+        conteo = 7 * [0]
+        for i in range(len(v)):
+            origen,indice = procesar_patentes(v,i)
+            conteo[indice] += 1
+        print(f"Cantidad de veichulos de Argentina:{conteo[0]}")
+        print(f"Cantidad de veichulos de Brasil:{conteo[1]}")
+        print(f"Cantidad de veichulos de Bolivia:{conteo[2]}")
+        print(f"Cantidad de veichulos de Paraguay:{conteo[3]}")
+        print(f"Cantidad de veichulos de Uruguay:{conteo[4]}")
+        print(f"Cantidad de veichulos de Chile:{conteo[5]}")
+        print(f"Cantidad de veichulos de otro pais:{conteo[6]}\n")
+
+
+
 
