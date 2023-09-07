@@ -1,7 +1,7 @@
 from TP_3_Modificado import *
 
 def principal():
-    vector = []
+    vector = None
     print('Bienvenido!\n\n')
     selec = -1
     while selec != 0:
@@ -9,22 +9,32 @@ def principal():
 
         if selec == 1:
             if vector is not None:
-                opcion = cargar_entre(0,3,"Desea borrar el contenido previo?\n"
-                                   "1 para confirmar\n"
-                                   "2 para cancelar\n")
+                opcion = cargar_entre(0,3,"Desea borrar el contenido previo?\n1 para confirmar\n2 para cancelar\n")
+
                 if opcion == 1:
                     vector = []
+                    m = open("peajes-tp3.txt","r")
+                    linea = m.readline()
+
+                    while True:
+                        linea = m.readline()
+                        if linea == "":
+                            break
+                        procesar_linea(linea,vector)
+
                 elif opcion == 2:
                     pass
 
-            m = open("peajes-tp3.txt","r")
-            linea = m.readline()
+            if vector is None:
+                    vector = []
+                    m = open("peajes-tp3.txt","r")
+                    linea = m.readline()
 
-            while True:
-                linea = m.readline()
-                if linea == "":
-                    break
-                procesar_linea(linea,vector)
+                    while True:
+                        linea = m.readline()
+                        if linea == "":
+                            break
+                        procesar_linea(linea,vector)
 
         elif selec == 2:
             n = int(input("Ingrese la cantidad de tickets a cargar:"))
@@ -36,12 +46,7 @@ def principal():
 
         elif selec == 4:
             patente = input('Ingrese la patente del vehiculo a buscar: ')
-            cabina = cargar_entre(-1,5,"Ingrese pais de cabina por el que paso:\n"
-                '0)Argentina\n'
-                '1)Bolivia\n'
-                '2)Brasil\n'
-                '3)Paraguay\n'
-                '4)Uruguay\n')
+            cabina = cargar_entre(-1,5,"Ingrese pais de cabina por el que paso:\n0)Argentina\n1)Bolivia\n2)Brasil\n3)Paraguay\n4)Uruguay\n")
 
             registro = buscar_por_patente(vector,patente,cabina)
             if registro is not None:
@@ -52,11 +57,31 @@ def principal():
         elif selec == 5:
             codigo = cargar_entre(-1,10000000000,"Ingrese el codigo de ticet a modificar:")
             modificar = buscar_por_codigo(vector,codigo)
+            
             if modificar is not None:
                 print("Cambios hechos")
                 print(modificar)
             else:
                 print("El numero de ticket no coincide con ningun elemento del registro")
+
+        elif selec == 6:
+            mostrar_conteo(vector)
+
+
+
+        elif selec == 7:
+
+            v_mb = (300, 200, 400, 300, 300)
+            ps = int(input("Ingrese un numero de 0 a 4: "))
+            fp = int(input("Ingrese forma de pago entre 1 y 2: "))
+
+            calcular_monto(ps,fp)
+
+
+
+
+
+
 
 
 
